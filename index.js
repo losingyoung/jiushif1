@@ -1,4 +1,6 @@
 const axios = require('axios').default
+const cron = require('node-cron')
+
 const App_Token='AT_uizN7k06aGyN8WxAVv4mjyf94l6jHrA9'
 
 const configs = [{
@@ -24,7 +26,7 @@ async function getResult(){
         seats.forEach(seat=>{
             const {bizShowSessionId, sessionName}= seat
             if (sessionName.indexOf('上汽摩专享')>-1)return;
-            if (sessionName.indexOf('周日')>-1 || sessionName.indexOf('三日')>-1){
+            if (sessionName.indexOf('周五')>-1 || sessionName.indexOf('三日')>-1){
                 const found = dySeats.find(dySeat => {
                     if (dySeat.bizShowSessionId === bizShowSessionId){
                         return true
@@ -61,4 +63,9 @@ async function sendSmg(summary, content){
       })
       console.log(res.data)
 }
-getResult()
+
+
+cron.schedule('5 * * * * *', () => {
+    console.log('每分钟在第 5 秒运行任务')
+    getResult()
+  })
